@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IoT</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div class = "container">
+        <h1 >Smart Agriculture System</h1>
+        <div class="row values">
+            <div class ="col-6">
+                <h2>Temperature Reading : </h2>
+                <h2>Humidity Reading : </h2>
+            
+                <h2>Methane Gas Reading : </h2>
+                <h2>Probability of Precipitation : </h2>
+            </div>
+            <div class="col-2">
+                <h2 id="temp_value"></h2>
+                <h2 id="moisture_value"></h2>
+                <h2 id="methane_value"></h2>
+                <h2 id="pop_value">{{pop}}</h2>
+            </div>
+            <div class="col-4">
+                <h2 id="temp_verdict"></h2>
+                <h2 id="moisture_verdict"></h2>
+                <h2 id="methane_verdict"></h2>
+                <h2>{{pop_verdict}}</h2>
+            </div>
+        </div>
+        <br>
+        <div class="row align-items-center">
+            <div class="col-3"></div>
+            <div class="col-9">
+                <h2 id="decision"></h2>
+            </div>
+            <div class="col-0"></div>
+        </div>
+        <br>
+    </div>
+    
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="temp-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="moisture-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="methane-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--suppress JSUnresolvedLibraryURL -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<!--suppress JSUnresolvedLibraryURL -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!--suppress JSUnresolvedLibraryURL -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+<script>
+    $(document).ready(function () {
+        const tempConfig = {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Temperature",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [],
+                    fill: false,
+                }],
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: ''
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Value'
+                        }
+                    }]
+                }
+            }
+        };
+
+		const moistureConfig = {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Moisture",
+                    backgroundColor: 'rgb(102, 99, 255)',
+                    borderColor: 'rgb(102, 99, 255)',
+                    data: [],
+                    fill: false,
+                }],
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: ''
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Moisture Value'
+                        }
+                    }]
+                }
+            }
+        };
+
+        const methaneConfig = {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Methane",
+                    backgroundColor: 'rgb(02, 192, 132)',
+                    borderColor: 'rgb(02, 192, 132)',
+                    data: [],
+                    fill: false,
+                }],
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: ''
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Value'
+                        }
+                    }]
+                }
+            }
+        };
+
+        const tempContext = document.getElementById('temp-canvas').getContext('2d');
+        const moistureContext = document.getElementById('moisture-canvas').getContext('2d');
+        const methaneContext = document.getElementById('methane-canvas').getContext('2d');
+
+		const tempChart = new Chart(tempContext, tempConfig);
+		const moistureChart = new Chart(moistureContext, moistureConfig);
+		const methaneChart = new Chart(methaneContext, methaneConfig);
+
+        const tempSource = new EventSource("/temp_handler");
+		const moistureSource = new EventSource("/moisture_handler");
+		const methaneSource = new EventSource("/methane_handler");
+        let x = false;
+        const pop_value = document.getElementById("pop_value");
+
+        tempSource.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            if (tempConfig.data.labels.length === 20) {
+                tempConfig.data.labels.shift();
+                tempConfig.data.datasets[0].data.shift();
+            }
+            tempConfig.data.labels.push(data.time);
+            tempConfig.data.datasets[0].data.push(data.value);
+            document.getElementById("temp_value").innerHTML = (data.value);
+            if(data.value >= 35.0){
+                document.getElementById("temp_verdict").innerHTML=("HIGH");
+                x = true;
+            }else if(data.value <= 15.0){
+                document.getElementById("temp_verdict").innerHTML=("LOW");
+            }else {
+                document.getElementById("temp_verdict").innerHTML=("NORMAL");
+            }
+            tempChart.update();
+        }
+
+		moistureSource.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            if (moistureConfig.data.labels.length === 20) {
+                moistureConfig.data.labels.shift();
+                moistureConfig.data.datasets[0].data.shift();
+            }
+            moistureConfig.data.labels.push(data.time);
+            moistureConfig.data.datasets[0].data.push(data.value);
+            document.getElementById("moisture_value").innerHTML = (data.value);
+            moistureChart.update();
+            if(data.value >= 75.0){
+                document.getElementById("moisture_verdict").innerHTML=("HIGH");
+            }else if(data.value <= 25.0){
+                document.getElementById("moisture_verdict").innerHTML=("LOW");
+                x = true;
+            }else {
+                document.getElementById("moisture_verdict").innerHTML=("NORMAL");
+            }
+        }
+        methaneSource.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            if (methaneConfig.data.labels.length === 20) {
+                methaneConfig.data.labels.shift();
+                methaneConfig.data.datasets[0].data.shift();
+            }
+            methaneConfig.data.labels.push(data.time);
+            methaneConfig.data.datasets[0].data.push(data.value);
+            document.getElementById("methane_value").innerHTML = (data.value);
+            if(data.value >= 2000){
+                document.getElementById("methane_verdict").innerHTML=("HIGH");
+                alert("WARNING! Methane Gas HIGH")
+            }else {
+                document.getElementById("methane_verdict").innerHTML=("NORMAL");
+            }
+            console.log(parseFloat(pop_value.textContent));
+            if( parseFloat(pop_value.textContent)<= 0.5){
+                console.log("working");
+                if(x){
+                    document.getElementById("decision").innerHTML=("Please Irrigate");
+                }else{
+                    document.getElementById("decision").innerHTML=("No need to irrigate for now");
+                }
+            }else{
+                document.getElementById("decision").innerHTML=("No need to irrigate, it might rain!");
+            }
+            
+            methaneChart.update();
+        }
+    });
+</script>
+</body>
+</html>

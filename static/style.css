@@ -1,0 +1,11 @@
+.container h1 {
+  text-align: center;
+  margin: 2rem 2rem;
+}
+.container .col-12{
+  margin : 1rem 2rem;
+}
+.values{
+  margin-left: 3rem;;
+  align-items: center;
+}
