@@ -14,7 +14,7 @@ app.config['MAIL_USE_SSL'] = True
 @app.route("/")
 def index():
    msg = Message('Hello', sender = 'srmates123@gmail.com', recipients = ['f20180886@pilani.bits-pilani.ac.in'])
-   msg.body = "Lakshit pp smol"
+   msg.body = "Lakshit"
    mail.send(msg)
    return "Sent"
 
